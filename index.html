@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogicBox</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            color: white;
+            background-color: red;
+            border: none;
+            cursor: pointer;
+        }
+        .btn.green {
+            background-color: green;
+        }
+        .text-3xl {
+            font-size: 2em;
+        }
+        .text-lg {
+            font-size: 1.25em;
+        }
+        .text-xl {
+            font-size: 1.5em;
+        }
+        .text-gray-400 {
+            color: gray;
+        }
+        .m-2 {
+            margin: 0.5em;
+        }
+        .m-4 {
+            margin: 1em;
+        }
+        .p-4 {
+            padding: 1em;
+        }
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="p-4">
+        <h1 class="text-3xl text-center m-2">Bienvenido a LogicBox</h1>
+        <p class="text-lg text-center text-gray-400 m-2">Aprende lógica booleana de manera interactiva.</p>
+        <p class="text-xl text-center m-4">Por favor, selecciona una opción:</p>
+        <button id="btnA" class="btn m-2" onclick="onATap()">A</button>
+        <button id="btnB" class="btn m-2" onclick="onBTap()">B</button>
+        <button id="changeGate" class="btn m-2" onclick="onGateChangeTap()">Cambiar Compuerta</button>
+        <p class="text-xl text-center m-4">Resultado:</p>
+        <p id="result" class="text-3xl text-center text-gray-400 m-4">0</p>
+        <img id="gateImage" src="" alt="Gate Image" style="width: 200px; height: auto;" />
+    </div>
+    <script>
+        let btnAState = false;
+        let btnBState = false;
+        let gateType = 0; // 0=AND, 1=OR, 2=NAND, 3=NOR, 4=XOR, 5=XNOR, 6=NOT
+
+        const images = [
+            "images/and.jpg", "images/or.jpg", "images/nand.jpg",
+            "images/nor.jpg", "images/xor.jpg", "images/xnor.jpg", "images/not.jpg"
+        ];
+
+        function getResult(gateType, btnAState, btnBState) {
+            let result = false;
+            switch (gateType) {
+                case 0: result = btnAState && btnBState; break; // AND
+                case 1: result = btnAState || btnBState; break; // OR
+                case 2: result = !(btnAState && btnBState); break; // NAND
+                case 3: result = !(btnAState || btnBState); break; // NOR
+                case 4: result = btnAState != btnBState; break; // XOR
+                case 5: result = btnAState == btnBState; break; // XNOR
+                case 6: result = !btnAState; break; // NOT (use only A)
+            }
+            return result ? "1" : "0";
+        }
+
+        function updateUI() {
+            document.getElementById("btnA").className = btnAState ? "btn green m-2" : "btn m-2";
+            document.getElementById("btnB").className = btnBState ? "btn green m-2" : "btn m-2";
+            document.getElementById("result").innerText = getResult(gateType, btnAState, btnBState);
+            document.getElementById("gateImage").src = images[gateType];
+        }
+
+        function onATap() {
+            btnAState = !btnAState;
+            updateUI();
+        }
+
+        function onBTap() {
+            btnBState = !btnBState;
+            updateUI();
+        }
+
+        function onGateChangeTap() {
+            gateType = (gateType + 1) % 7;
+            updateUI();
+        }
+
+        // Initialize UI
+        updateUI();
+    </script>
+</body>
+</html>
