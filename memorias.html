@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulación de Latch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .btn.active {
+            background-color: green;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .led {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin: 5px;
+            display: inline-block;
+            background-color: red; /* Default color */
+        }
+        .led.on {
+            background-color: green;
+        }
+        .led.green {
+            background-color: green;
+        }
+        .led.blue {
+            background-color: blue;
+        }
+        .hidden {
+            display: none;
+        }
+        .led-container {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <div id="shiftRegisterPage">
+        <h1>Simulación de Registro de Desplazamiento</h1>
+        <button id="shiftLeftBtn" class="btn" onclick="shiftLeft()">Desplazar Izquierda</button>
+        <button id="shiftRightBtn" class="btn" onclick="shiftRight()">Desplazar Derecha</button>
+        <div id="ledContainer" class="led-container">
+            <!-- LEDs will be generated here -->
+        </div>
+        <button class="btn" onclick="changePage('dataLatchPage')">Cambiar a Data Latch</button>
+    </div>
+
+    <div id="dataLatchPage" class="hidden">
+        <h1>Simulación de Data Latch</h1>
+        <button id="dataBtn" class="btn" onclick="toggleData()">Data</button>
+        <button id="enableBtn" class="btn" onclick="toggleEnable()">Enable</button>
+        <div id="dataLed" class="led off"></div>
+        <button class="btn" onclick="changePage('srLatchPage')">Cambiar a Latch SR</button>
+    </div>
+
+    <div id="srLatchPage" class="hidden">
+        <h1>Simulación de Latch SR</h1>
+        <button id="setBtn" class="btn" onclick="set()">Set</button>
+        <button id="resetBtn" class="btn" onclick="reset()">Reset</button>
+        <div id="srLed" class="led off"></div>
+        <button class="btn" onclick="changePage('shiftRegisterPage')">Cambiar a Registro de Desplazamiento</button>
+    </div>
+
+    <script>
+        let ledState = false;
+        let dataState = false;
+        let enableState = false;
+        let shiftRegister = Array(8).fill(null); // Use null to indicate no color, 'green' for green, 'blue' for blue
+
+        function updateLED(id, state) {
+            const led = document.getElementById(id);
+            if (state) {
+                led.classList.remove('off');
+                led.classList.add('on');
+            } else {
+                led.classList.remove('on');
+                led.classList.add('off');
+            }
+        }
+
+        function updateButton(id, state) {
+            const btn = document.getElementById(id);
+            if (state) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        }
+
+        function updateShiftRegister() {
+            const ledContainer = document.getElementById('ledContainer');
+            ledContainer.innerHTML = '';
+            shiftRegister.forEach((state, index) => {
+                const led = document.createElement('div');
+                led.className = 'led ' + (state ? state : 'off');
+                led.id = 'led' + index;
+                ledContainer.appendChild(led);
+            });
+        }
+
+        function shiftLeft() {
+            shiftRegister.shift();
+            shiftRegister.push('green'); // Add green to the end
+            updateShiftRegister();
+            updateButton('shiftLeftBtn', true);
+            setTimeout(() => updateButton('shiftLeftBtn', false), 200); // Simulate button release
+        }
+
+        function shiftRight() {
+            shiftRegister.pop();
+            shiftRegister.unshift('blue'); // Add blue to the beginning
+            updateShiftRegister();
+            updateButton('shiftRightBtn', true);
+            setTimeout(() => updateButton('shiftRightBtn', false), 200); // Simulate button release
+        }
+
+        function set() {
+            ledState = true;
+            updateLED('srLed', ledState);
+            updateButton('setBtn', true);
+            setTimeout(() => updateButton('setBtn', false), 200); // Simulate button release
+        }
+
+        function reset() {
+            ledState = false;
+            updateLED('srLed', ledState);
+            updateButton('resetBtn', true);
+            setTimeout(() => updateButton('resetBtn', false), 200); // Simulate button release
+        }
+
+        function toggleData() {
+            dataState = !dataState;
+            updateButton('dataBtn', dataState);
+            updateDataLatch();
+        }
+
+        function toggleEnable() {
+            enableState = !enableState;
+            updateButton('enableBtn', enableState);
+            updateDataLatch();
+        }
+
+        function updateDataLatch() {
+            const result = enableState ? dataState : false;
+            updateLED('dataLed', result);
+        }
+
+        function changePage(pageId) {
+            document.getElementById('shiftRegisterPage').classList.add('hidden');
+            document.getElementById('dataLatchPage').classList.add('hidden');
+            document.getElementById('srLatchPage').classList.add('hidden');
+            document.getElementById(pageId).classList.remove('hidden');
+        }
+
+        // Initialize the LED display for the shift register
+        updateShiftRegister();
+    </script>
+</body>
+</html>

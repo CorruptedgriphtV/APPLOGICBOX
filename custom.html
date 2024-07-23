@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulación de Compuertas Lógicas Personalizadas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .btn.active {
+            background-color: green;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .led {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin: 5px;
+            display: inline-block;
+        }
+        .led.off {
+            background-color: red;
+        }
+        .led.on {
+            background-color: green;
+        }
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+        .input-container input {
+            padding: 10px;
+            font-size: 1em;
+            margin-bottom: 10px;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simulación de Compuertas Lógicas Personalizadas</h1>
+    <div class="input-container">
+        <input id="expressionInput" type="text" placeholder="Ingresa la expresión lógica (e.g., A & B + !A)" />
+        <button class="btn" onclick="setExpression()">Enviar</button>
+    </div>
+    <div>
+        <button id="aBtn" class="btn" onclick="toggleA()">A</button>
+        <button id="bBtn" class="btn" onclick="toggleB()">B</button>
+        <div id="outputLed" class="led off"></div>
+    </div>
+
+    <script>
+        let aState = false;
+        let bState = false;
+        let expression = 'A & B + !A';
+
+        function toggleA() {
+            aState = !aState;
+            updateButton('aBtn', aState);
+        }
+
+        function toggleB() {
+            bState = !bState;
+            updateButton('bBtn', bState);
+        }
+
+        function updateButton(id, state) {
+            const btn = document.getElementById(id);
+            if (state) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        }
+
+        function setExpression() {
+            expression = document.getElementById('expressionInput').value;
+        }
+
+        function evaluateExpression() {
+            const evaluatedExpression = expression
+                .replace(/A/g, aState ? 'true' : 'false')
+                .replace(/B/g, bState ? 'true' : 'false')
+                .replace(/&/g, '&&')
+                .replace(/\+/g, '||')
+                .replace(/!/g, '!');
+            
+            let result = false;
+            try {
+                result = eval(evaluatedExpression);
+            } catch (e) {
+                alert('Expresión no válida');
+            }
+
+            updateLED(result);
+        }
+
+        function updateLED(state) {
+            const led = document.getElementById('outputLed');
+            if (state) {
+                led.classList.remove('off');
+                led.classList.add('on');
+            } else {
+                led.classList.remove('on');
+                led.classList.add('off');
+            }
+        }
+
+        setInterval(evaluateExpression, 1000); // Refresh every second
+    </script>
+</body>
+</html>
