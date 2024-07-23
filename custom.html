@@ -59,6 +59,11 @@
             margin-bottom: 10px;
             width: 300px;
         }
+        .examples {
+            margin-top: 20px;
+            font-size: 1em;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -71,6 +76,16 @@
         <button id="aBtn" class="btn" onclick="toggleA()">A</button>
         <button id="bBtn" class="btn" onclick="toggleB()">B</button>
         <div id="outputLed" class="led off"></div>
+    </div>
+    <div class="examples">
+        <p>Ejemplos de expresiones lógicas:</p>
+        <p>A & B  (AND)</p>
+        <p>A + B  (OR)</p>
+        <p>!A  (NOT)</p>
+        <p>A # B  (XOR)</p>
+        <p>!(A & B)  (NAND)</p>
+        <p>!(A + B)  (NOR)</p>
+        <p>!(A # B)  (XNOR)</p>
     </div>
 
     <script>
@@ -107,8 +122,12 @@
                 .replace(/B/g, bState ? 'true' : 'false')
                 .replace(/&/g, '&&')
                 .replace(/\+/g, '||')
-                .replace(/!/g, '!');
-            
+                .replace(/!/g, '!')
+                .replace(/#/g, '!=')
+                .replace(/!&/g, '!&&') // NAND
+                .replace(/!\+/g, '!||') // NOR
+                .replace(/!#/g, '=='); // XNOR
+
             let result = false;
             try {
                 result = eval(evaluatedExpression);
