@@ -79,13 +79,12 @@
     </div>
     <div class="examples">
         <p>Ejemplos de expresiones lógicas:</p>
-        <p>A & B  (AND)</p>
-        <p>A + B  (OR)</p>
-        <p>!A  (NOT)</p>
-        <p>A # B  (XOR)</p>
-        <p>!(A & B)  (NAND)</p>
-        <p>!(A + B)  (NOR)</p>
-        <p>!(A # B)  (XNOR)</p>
+        <p>F = A & B  (AND)</p>
+        <p>G = A # B  (OR)</p>
+        <p>H = !A  (NOT)</p>
+        <p>I = A $ B  (XOR)</p>
+        <p>J = !(A & B)  (NAND)</p>
+        <p>K = !(A # B)  (NOR)</p>
     </div>
 
     <script>
@@ -121,13 +120,14 @@
                 .replace(/A/g, aState ? 'true' : 'false')
                 .replace(/B/g, bState ? 'true' : 'false')
                 .replace(/&/g, '&&')
-                .replace(/\+/g, '||')
+                .replace(/#/g, '||')
+                .replace(/\$/g, '^')
                 .replace(/!/g, '!')
-                .replace(/#/g, '!=')
-                .replace(/!&/g, '!&&') // NAND
-                .replace(/!\+/g, '!||') // NOR
-                .replace(/!#/g, '=='); // XNOR
-
+                .replace(/!&&/g, '!(')
+                .replace(/!\|\|/g, '!(')
+                .replace(/!\^/g, '!(')
+                .replace(/\)/g, '))');
+            
             let result = false;
             try {
                 result = eval(evaluatedExpression);
