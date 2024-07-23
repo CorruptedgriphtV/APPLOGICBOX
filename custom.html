@@ -129,12 +129,8 @@
                 .replace(/\)/g, '))');
             
             let result = false;
-            try {
-                result = eval(evaluatedExpression);
-            } catch (e) {
-                console.log('Expresión no válida');
-            }
-
+            result = eval(evaluatedExpression);
+           
             updateLED(result);
         }
 
