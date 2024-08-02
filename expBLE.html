@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conectar a ESP32 via Bluetooth</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+        .input-container input {
+            padding: 10px;
+            font-size: 1em;
+            margin-bottom: 10px;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Conectar a ESP32 via Bluetooth</h1>
+    <div class="input-container">
+        <input id="dataInput" type="text" placeholder="Ingresa el texto a enviar" />
+        <button class="btn" onclick="sendData()">Enviar</button>
+    </div>
+    <button class="btn" onclick="connectBluetooth()">Conectar a ESP32</button>
+
+    <script>
+        let bluetoothDevice;
+        let bluetoothCharacteristic;
+
+        async function connectBluetooth() {
+            try {
+                bluetoothDevice = await navigator.bluetooth.requestDevice({
+                    filters: [{ name: 'ESP32_Custom' }],
+                    optionalServices: ['4fafc201-1fb5-459e-8fcc-c5c9c331914b']
+                });
+                const server = await bluetoothDevice.gatt.connect();
+                const service = await server.getPrimaryService('4fafc201-1fb5-459e-8fcc-c5c9c331914b');
+                bluetoothCharacteristic = await service.getCharacteristic('beb5483e-36e1-4688-b7f5-ea07361b26a8');
+                alert('Conectado a ESP32');
+            } catch (error) {
+                console.error('Error al conectar con ESP32:', error);
+            }
+        }
+
+        async function sendData() {
+            const dataInput = document.getElementById('dataInput').value;
+            if (bluetoothCharacteristic) {
+                await bluetoothCharacteristic.writeValue(new TextEncoder().encode(dataInput));
+                alert('Datos enviados');
+            } else {
+                alert('Conéctate al ESP32 primero.');
+            }
+        }
+    </script>
+</body>
+</html>
