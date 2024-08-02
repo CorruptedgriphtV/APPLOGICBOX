@@ -49,6 +49,9 @@
         .text-center {
             text-align: center;
         }
+        a.btn {
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -66,7 +69,7 @@
         <!-- New buttons for navigation -->
         <button class="btn m-2" onclick="navigateTo('/custom')">Custom</button>
         <button class="btn m-2" onclick="navigateTo('/memorias')">Memorias</button>
-        <button class="btn m-2" onclick="navigateTo('/manual.pdf')">Manual</button>
+        <a href="https://github.com/CorruptedgriphtV/APPLOGICBOX/blob/27f395fa620ca41607b60647f84b8a358a7570b8/manual.pdf" class="btn m-2">Manual</a>
     </div>
     <script>
         let btnAState = false;
@@ -121,5 +124,8 @@
         // Initialize UI
         updateUI();
     </script>
+    <div>
+        <img src="/AR.png" alt="QR Code">
+    </div>
 </body>
 </html>
